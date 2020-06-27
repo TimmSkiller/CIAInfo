@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIAInfo", "CIAInfo.csproj", "{24B1D2AB-8572-4FF0-8CB8-4A1046841DBE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24B1D2AB-8572-4FF0-8CB8-4A1046841DBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24B1D2AB-8572-4FF0-8CB8-4A1046841DBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24B1D2AB-8572-4FF0-8CB8-4A1046841DBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24B1D2AB-8572-4FF0-8CB8-4A1046841DBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AC1EEA8D-E651-4B9B-B771-FDBD12471367}
+	EndGlobalSection
+EndGlobal
