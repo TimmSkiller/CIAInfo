@@ -3,7 +3,7 @@ Simple application that implements ninfs to mount one or more CIAs (CTR Importab
 
 Requirements:
 
-- The latest version of [.NET Core Runtime](https://www.google.com) for Windows
+- The latest version of [.NET Core Runtime](https://www.google.com) for Windows (not required for the framework independent binaries)
 
 - The latest [ninfs](https://github.com/ihaveamac/ninfs/releases/tag/v1.6.1) Windows executable and [WinFSP](http://www.secfs.net/winfsp/rel/)
 
@@ -29,7 +29,7 @@ CIAInfo will now start reading each CIA one by one and display the read informat
 Example output:
 
 ```
-CIAInfo 1.1 - Made by TimmSkiller, credit goes to ihaveamac for ninfs
+CIAInfo 1.0 - Made by TimmSkiller, credit goes to ihaveamac for ninfs
 Checking existence of needed folders...
 Mounting example.cia...
 
