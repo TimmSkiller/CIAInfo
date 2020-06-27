@@ -43,6 +43,7 @@ Title ID: 000400000017C200
 Region: Australia (Z)
 CIA Type: Original 3DS | Game data
 Version (WIP): 0000
+Size: 1887436 KB | 14745 Blocks (estimated)
 ```
 
 This app might be badly written, as it's my first ever app that turned into something useful.
