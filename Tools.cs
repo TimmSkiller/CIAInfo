@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,57 +13,56 @@ namespace CIAInfo
         //does needed work after app launch
         public static string[] Initialize()
         {
-            //checking for directories needed to run app
-            Console.WriteLine("Checking existence of needed folders...");
-            string[] paths = AppPaths;
-            for (int i = 0; i < paths.Length - 3; i++)
+            //checking for directories needed to run app, and creating them if they do not exist
+            for (int i = 0; i < RequiredDirectories.Length; i++)
             {
-                if (!Directory.Exists(paths[i]))
+                if (!Directory.Exists(RequiredDirectories[i]))
                 {
-                    Console.WriteLine($"Creating {paths[i]}...");
-                    Directory.CreateDirectory(paths[i]);
+                    Directory.CreateDirectory(RequiredDirectories[i]);
                 }
             }
 
-            if (!File.Exists(paths[2]))
+            //checking if required files exist
+
+            if (!File.Exists(RequiredFiles[0]))
             {
-                Console.WriteLine("ninfs.exe does not exist!\nPlease download the Windows (.exe) version of ninfs from github.com/ihaveamac/ninfs and put it inside the ninfs folder.");
-                Environment.Exit(0);
+                throw new FileNotFoundException("The ninfs executable was not found!\nPlease download the Windows (.exe) version of ninfs from github.com/ihaveamac/ninfs and put it inside the ninfs folder.");
             }
-            else if (!File.Exists(paths[3]))
+            else if (!File.Exists(RequiredFiles[1]))
             {
-                Console.WriteLine("ARM9 Boot rom not found! Please dump it from your 3DS and put it inside the \"3ds\" folder in AppData.");
-                Environment.Exit(0);
+                throw new FileNotFoundException("ARM9 Boot rom not found! Please dump it from your 3DS and put it inside the \"3ds\" folder in AppData.");
             }
-            else if (!File.Exists(paths[4]))
+            else if (!File.Exists(RequiredFiles[2]))
             {
-                Console.WriteLine("No seeddb.bin found in the ninfs folder. \nThe program can continue without it, but you might get an error for games that require seeds.");
+                throw new FileNotFoundException("No seeddb.bin found in the ninfs folder.");
+            }
+            string[] ciaPaths = Directory.GetFiles(RequiredDirectories[0], "*.cia");
+
+            if (ciaPaths.Length < 1)
+            {
+                throw new FileNotFoundException("Error: No CIAs found. Please put at least one CIA in the folder \"Put CIAs Here\".");
             }
 
-            string[] ciaDirFiles = Directory.GetFiles(paths[0], "*.cia");
-
-            if (ciaDirFiles.Length < 1)
-            {
-                Console.WriteLine("Error: No files of type CIA found. Please put at least one CIA in the folder \"Put CIAs Here\".");
-                Environment.Exit(0);
-            }
-
-            return ciaDirFiles;
+            return ciaPaths;
         }
 
-        public static string[] AppPaths =
+        public static string[] RequiredDirectories =
         {
             $"{Environment.CurrentDirectory}\\Put CIAs here",
-            $"{Environment.CurrentDirectory}\\ninfs",
+            $"{Environment.CurrentDirectory}\\ninfs"
+        };
+
+        public static string[] RequiredFiles =
+        {
             $"{Environment.CurrentDirectory}\\ninfs\\ninfs.exe",
             $"{Environment.GetEnvironmentVariable("userprofile")}\\AppData\\Roaming\\3ds\\boot9.bin",
-            $"{Environment.GetEnvironmentVariable("userprofile")}\\AppData\\Roaming\\3ds\\seeddb.bin",
+            $"{Environment.GetEnvironmentVariable("userprofile")}\\AppData\\Roaming\\3ds\\seeddb.bin"
         };
 
         //reads any file from a given start and end hex offset
         public static string ReadHexUTF16(string path, Int32 startOffset, Int32 endOffset, bool decode)
         {
-            if (!File.Exists(path)) { throw new FileNotFoundException($"Could not find a file in path {path}"); }
+            if (!File.Exists(path)) { throw new FileNotFoundException($"Could not find {path}"); }
 
             string result = "";
 
@@ -69,7 +70,7 @@ namespace CIAInfo
             BinaryReader reader = new BinaryReader(File.OpenRead(path));
             reader.BaseStream.Position = startOffset;
 
-            for (int i = startOffset; i < endOffset; i++)
+            for (int i = startOffset; i < endOffset - 0x3F; i++)
             {
                 bytes.Add(reader.ReadByte());
             }
@@ -94,13 +95,13 @@ namespace CIAInfo
                     result += b.ToString("X2");
                 }
             }
-
+            reader.Close();
             return result;
         }
 
         public static string ReadHexUTF8(string path, Int32 startOffset, Int32 endOffset, bool decode)
         {
-            if (!File.Exists(path)) { throw new FileNotFoundException($"Could not find a file in path {path}"); }
+            if (!File.Exists(path)) { throw new FileNotFoundException($"Could not find {path}"); }
 
             string result = "";
 
@@ -124,7 +125,7 @@ namespace CIAInfo
                     result += b.ToString("X2");
                 }
             }
-
+            reader.Close();
             return result;
         }
 
@@ -161,6 +162,14 @@ namespace CIAInfo
         {
             decimal size = sizeInBytes / 1024;
             return $"{size} KB | {Math.Round(size / 128)} blocks (estimated)";
+        }
+
+        public static void KillNinfs()
+        {
+            foreach (Process prs in Process.GetProcessesByName("ninfs"))
+            {
+                prs.Kill();
+            }
         }
     }
 }
