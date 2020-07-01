@@ -3,7 +3,7 @@ Simple application that implements ninfs to mount one or more CIAs (CTR Importab
 
 Requirements:
 
-- The latest version of [.NET Core Runtime](https://www.google.com) for Windows (not required for the framework independent binaries)
+- The latest version of [.NET Core Runtime](https://www.google.com) for Windows (not required for the framework independent INDP binaries)
 
 - The latest [ninfs](https://github.com/ihaveamac/ninfs/releases/tag/v1.6.1) Windows executable and [WinFSP](http://www.secfs.net/winfsp/rel/)
 
@@ -19,8 +19,7 @@ First, make sure you have all the requirements
 2. Put the ninfs executable into the ninfs folder
 3. Put your CIAs in to the "Put CIAs here" folder
 4. Create a new Folder called "3ds" in AppData\Roaming (can be accessed by opening %appdata% in windows explorer), and put both boot9.bin and seeddb.bin inside it
-5. Open either a Command Prompt or Windows PowerShell and navigate to the folder where CIAInfo.exe is located
-6. Execute CIAInfo.exe
+5. Double click on `CIAInfo.exe` or execute it in a command prompt or in Windows PowerShell
 
 NOTE: CIAInfo does not support parameters. Whatever you pass in will not be used.
 
@@ -40,9 +39,9 @@ Short Name: YO-KAI WATCH
 Publisher : Nintendo
 Product Code: CTR-P-AYWZ
 Title ID: 000400000017C200
-Region: Australia (Z)
+Region: Europe (Z)
 CIA Type: Original 3DS | Game data
-Version (WIP): 0000
+Version (WIP): 0.0.0
 Size: 1887436 KB | 14745 Blocks (estimated)
 ```
 
