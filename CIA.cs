@@ -129,7 +129,7 @@ namespace CIAInfo
                 'J' => "Japan (J)",
                 'K' => "Korea (K)",
                 'W' => "China (CN)",
-                'A' => "Global (Region Free) (A)",
+                'A' => "Global (Region Free) (W)",
                 _ => "Unknown (UNK)",
             };
             return result;
@@ -138,6 +138,11 @@ namespace CIAInfo
         //reading the CIA
         public static CIA Read(string path)
         {
+            if (Tools.ReadHexUTF8(path, 0x0, 0x2, false).Trim() != "2020")
+            {
+                throw new ArgumentException($"The current CIA File in path {path} does not contain a valid CIA header.");
+            }
+
             string mountPoint = $"{Environment.CurrentDirectory}\\ninfs_mount";
             //starting ninfs, mounting CIA and reading data
             Process ninfs = new Process();
