@@ -31,7 +31,7 @@ namespace CIAInfo
                 Environment.Exit(0);
             }
 
-            Console.WriteLine("CIAInfo 1.1 - Made by TimmSkiller, credit goes to ihaveamac for ninfs");
+            Console.WriteLine("CIAInfo 1.3 - Made by TimmSkiller, credit goes to ihaveamac for ninfs");
 
             string[] ciaPaths = Array.Empty<string>();
 
