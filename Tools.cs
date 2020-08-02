@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -158,10 +157,12 @@ namespace CIAInfo
             return result;
         }
 
-        public static string GetSize(int sizeInBytes)
+        public static string CleanName(string nameToClean) => nameToClean.Replace('\u0000', ' ').Trim().Replace(":", " -").Replace("/", "-").Replace("\\", "-");
+
+        public static string GetSize(long sizeInBytes)
         {
-            decimal size = sizeInBytes / 1024;
-            return $"{size} KB | {Math.Round(size / 128)} blocks (estimated)";
+            long size = sizeInBytes / 1024;
+            return $"{size} KB | {Math.Round((decimal)size / 128)} blocks (estimated)";
         }
 
         public static void KillNinfs()

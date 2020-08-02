@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace CIAInfo
 {
@@ -55,35 +55,58 @@ namespace CIAInfo
 
             foreach (string path in ciaPaths)
             {
-                string[] data = Array.Empty<string>();
+                CIA c = new CIA();
 
                 try
                 {
-                    data = CIA.Read(path);
+                    c = CIA.Read(path);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Error: CIA could not be read and might be corrupt!\n");
                     Console.WriteLine($"Exception Message: {e.Message}");
                     Console.WriteLine($"Exception Stack Trace: {e.StackTrace}");
-                    Tools.KillNinfs();
-                    Environment.Exit(1);
+                    continue;
                 }
 
-                CIA c = new CIA(data);
-
-                Console.WriteLine($"\nFile Name: {c.FilePath}\n");
-                Console.WriteLine($"Long Name: {c.LongN}");
-                Console.WriteLine($"Short Name: {c.ShortN}");
-                Console.WriteLine($"Publisher : {c.Pub}");
-                Console.WriteLine($"Product Code: {c.PID}");
-                Console.WriteLine($"Title ID: {c.TID}");
+                Console.WriteLine($"\nFile Name: {c.FileName}\n");
+                Console.WriteLine($"Long Name: {c.LongName}");
+                Console.WriteLine($"Short Name: {c.ShortName}");
+                Console.WriteLine($"Publisher : {c.Publisher}");
+                Console.WriteLine($"Product Code: {c.ProductCode}");
+                Console.WriteLine($"Title ID: {c.TitleId}");
                 Console.WriteLine($"Region: {c.Region}");
                 Console.WriteLine($"CIA Type: {c.FileType}");
                 Console.WriteLine($"Version (WIP): {c.Version}");
                 Console.WriteLine($"Size: {c.FileSize}\n");
+                Console.WriteLine();
+                Console.WriteLine($"GodMode9 File Name: {c.Gm9FileName}");
+                Console.WriteLine();
+
+                if (c.FileName != c.Gm9FileName)
+                {
+                    Thread.Sleep(500);
+                    Console.WriteLine("Renaming to GodeMode9 Format...");
+                    Tools.KillNinfs();
+                    try
+                    {
+                        File.Move(c.FilePath, $"{Tools.RequiredDirectories[0]}\\{c.Gm9FileName}");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Error renaming file.");
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine(e.StackTrace);
+                        continue;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nFile is already in GodeMode9 Name Format, no need to rename.\n");
+                }
             }
 
+            Console.WriteLine($"Files read: {ciaPaths.Length}");
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
 
