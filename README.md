@@ -1,5 +1,5 @@
 # CIAInfo
-Simple application that implements ninfs to mount one or more CIAs (CTR Importable Archive) files, read differnet parts of it, and displays the information.
+Simple application that implements ninfs to mount one or more CIAs (CTR Importable Archive) files, reads different parts of it, and displays the information of it.
 
 Requirements:
 
