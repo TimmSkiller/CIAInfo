@@ -77,7 +77,7 @@ namespace CIAInfo
                 Console.WriteLine($"Title ID: {c.TitleId}");
                 Console.WriteLine($"Region: {c.Region}");
                 Console.WriteLine($"CIA Type: {c.FileType}");
-                Console.WriteLine($"Version (WIP): {c.Version}");
+                Console.WriteLine($"Version: {c.Version}");
                 Console.WriteLine($"Size: {c.FileSize}\n");
                 Console.WriteLine();
                 Console.WriteLine($"GodMode9 File Name: {c.Gm9FileName}");
