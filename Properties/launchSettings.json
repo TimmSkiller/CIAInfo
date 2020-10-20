@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "CIAInfo": {
-      "commandName": "Project",
-      "commandLineArgs": "dir -d thing -n -g"
-    }
-  }
-}

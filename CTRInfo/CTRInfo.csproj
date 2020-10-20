@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="CTR.NET\CTR.NET.csproj" />
+    <ProjectReference Include="..\CTR.NET\CTR.NET.csproj" />
   </ItemGroup>
 
 </Project>
