@@ -29,9 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CTR.NET">
-      <HintPath>..\CTR.NET\bin\Debug\netcoreapp3.1\CTR.NET.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="CTR.NET\CTR.NET.csproj" />
   </ItemGroup>
 
 </Project>
