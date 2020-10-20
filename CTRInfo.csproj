@@ -1,10 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <StartupObject>CIAInfo.Program</StartupObject>
+    <StartupObject>CTRInfo.Program</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>CTRInfo</AssemblyName>
+    <RootNamespace>CTRInfo</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,8 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Put CIAs Here\" />
-    <Folder Include="ninfs\" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CTR.NET">
+      <HintPath>..\CTR.NET\bin\Debug\netcoreapp3.1\CTR.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

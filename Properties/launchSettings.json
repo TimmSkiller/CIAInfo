@@ -2,7 +2,7 @@
   "profiles": {
     "CIAInfo": {
       "commandName": "Project",
-        "commandLineArgs": ""
+      "commandLineArgs": "dir -d thing -n -g"
     }
   }
 }

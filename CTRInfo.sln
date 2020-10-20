@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIAInfo", "CIAInfo.csproj", "{24B1D2AB-8572-4FF0-8CB8-4A1046841DBE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTRInfo", "CTRInfo.csproj", "{24B1D2AB-8572-4FF0-8CB8-4A1046841DBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

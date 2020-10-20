@@ -1,118 +1,158 @@
-﻿using System;
+﻿using CommandLine;
+using CTR.NET;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
 
-namespace CIAInfo
+namespace CTRInfo
 {
     internal class Program
     {
-        //imports native dll calls to change the current code page
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool SetConsoleOutputCP(uint wCodePageID);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool SetConsoleCP(uint wCodePageID);
-
-        private static void Main()
+        private static void Main(string[] args)
         {
-            //gets the current active encoding of the user before changing it to 932 (japanese)
-            int userencoding = System.Text.Encoding.Default.CodePage;
-
-            //changes the console code page to japanese so that the console can display japanese text
-            SetConsoleCP(932);
-            SetConsoleOutputCP(932);
-
-            if (Process.GetProcessesByName("CIAInfo").Length > 1)
+            if (Process.GetProcessesByName("CTRInfo").Length > 1)
             {
-                Console.WriteLine("Another instance of CIAInfo is running. Please close the other instance and try again.\nPress any key to exit...");
+                Console.WriteLine("Another instance of CTRInfo is running. Please close the other instance and try again.\nPress any key to exit...");
                 Console.ReadLine();
                 Environment.Exit(0);
             }
 
-            Console.WriteLine("CIAInfo 1.3 - Made by TimmSkiller, credit goes to ihaveamac for ninfs");
+            Console.WriteLine("CTRInfo 2.0 - Made by TimmSkiller\n");
 
-            string[] ciaPaths = Array.Empty<string>();
+            Parser.Default.ParseArguments<CLIArgs.SingleCiaReadOptions, CLIArgs.DirectoryReadOptions>(args)
+                .WithParsed<CLIArgs.SingleCiaReadOptions>(options => ReadSingleCIA(options))
+                .WithParsed<CLIArgs.DirectoryReadOptions>(options => ReadCiaDirectory(options));
+        }
+
+        public static void ReadSingleCIA(CLIArgs.SingleCiaReadOptions options)
+        {
+            if (!File.Exists(options.CiaPath))
+            {
+                Console.WriteLine("ERROR: Specified file does not exist.");
+                Environment.Exit(-1);
+            }
+
+            if (options.ChangeToGm9Format && (!options.UseNinfs))
+            {
+                Console.WriteLine("ERROR: Invalid Arguments. -g (--gm9-name-format) can only be used in combination with -n (--use-ninfs).");
+                Environment.Exit(0);
+            }
 
             try
             {
-                ciaPaths = Tools.Initialize();
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadLine();
-                Environment.Exit(0);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("A fatal error occurred.\nPlease note the error and create an issue on my github page: https://github.com/TimmSkiller/CIAInfo/issues");
-                Console.WriteLine($"Error: {e.GetType()}");
-                Console.WriteLine($"Stacktrace: {e.StackTrace}");
-            }
+                CIA c = new CIA(options.CiaPath, options.UseNinfs);
 
-            foreach (string path in ciaPaths)
-            {
-                CIA c = new CIA();
-
-                try
+                if (options.Verbose)
                 {
-                    c = CIA.Read(path);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error: CIA could not be read and might be corrupt!\n");
-                    Console.WriteLine($"Exception Message: {e.Message}");
-                    Console.WriteLine($"Exception Stack Trace: {e.StackTrace}");
-                    continue;
-                }
-
-                Console.WriteLine($"\nFile Name: {c.FileName}\n");
-                Console.WriteLine($"Long Name: {c.LongName}");
-                Console.WriteLine($"Short Name: {c.ShortName}");
-                Console.WriteLine($"Publisher : {c.Publisher}");
-                Console.WriteLine($"Product Code: {c.ProductCode}");
-                Console.WriteLine($"Title ID: {c.TitleId}");
-                Console.WriteLine($"Region: {c.Region}");
-                Console.WriteLine($"CIA Type: {c.FileType}");
-                Console.WriteLine($"Version: {c.Version}");
-                Console.WriteLine($"Size: {c.FileSize}\n");
-                Console.WriteLine();
-                Console.WriteLine($"GodMode9 File Name: {c.Gm9FileName}");
-                Console.WriteLine();
-
-                if (c.FileName != c.Gm9FileName)
-                {
-                    Thread.Sleep(500);
-                    Console.WriteLine("Renaming to GodeMode9 Format...");
-                    Tools.KillNinfs();
-                    try
-                    {
-                        File.Move(c.FilePath, $"{Tools.RequiredDirectories[0]}\\{c.Gm9FileName}");
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Error renaming file.");
-                        Console.WriteLine(e.Message);
-                        Console.WriteLine(e.StackTrace);
-                        continue;
-                    }
+                    DisplayCIAVerbose(c, options.ChangeToGm9Format);
                 }
                 else
                 {
-                    Console.WriteLine("\nFile is already in GodeMode9 Name Format, no need to rename.\n");
+                    DisplayCIA(c, options.ChangeToGm9Format);
                 }
             }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine($"ERROR: {e.Message}");
+                Console.WriteLine("Please make sure you have ninfs, it's requirements (boot9.bin and seeddb.bin) in their respective locations.");
+                Environment.Exit(-1);
+            }
+        }
 
-            Console.WriteLine($"Files read: {ciaPaths.Length}");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadLine();
+        public static void ReadCiaDirectory(CLIArgs.DirectoryReadOptions options)
+        {
+            if (!Directory.Exists(options.CiaDirPath))
+            {
+                Console.WriteLine("ERROR: Specified file does not exist.");
+                Environment.Exit(-1);
+            }
 
-            //reverts the original code page the user had active before running CIAInfo
-            SetConsoleCP(Convert.ToUInt32(userencoding));
-            SetConsoleOutputCP(Convert.ToUInt32(userencoding));
+            if (options.ChangeToGm9Format && (!options.UseNinfs))
+            {
+                Console.WriteLine("ERROR: Invalid Arguments. -g (--gm9-name-format) can only be used in combination with -n (--use-ninfs).");
+                Environment.Exit(0);
+            }
+
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(options.CiaDirPath);
+
+                if (dir.GetFiles("*.cia").Length == 0)
+                {
+                    throw new ArgumentException("Specified directory did not contain any CIAs.");
+                }
+
+                foreach (FileInfo file in dir.GetFiles("*.cia"))
+                {
+                    try
+                    {
+                        CIA c = new CIA(file.FullName, options.UseNinfs);
+
+                        if (options.Verbose)
+                        {
+                            DisplayCIAVerbose(c, options.ChangeToGm9Format);
+                        }
+                        else
+                        {
+                            DisplayCIA(c, options.ChangeToGm9Format);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Error reading CIA at {file.FullName}.");
+                        Console.WriteLine($"ERROR: {e.Message}");
+                        continue;
+                    }
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine($"ERROR: {e.Message}");
+            }
+        }
+
+        public static void DisplayCIA(CIA c, bool rename)
+        {
+            SMDHTitleNameStructure contentZeroSMDH = c.Icons[0].TitleNames[0];
+            NCCHInfo contentZeroNCCH = c.Contents[0].Item2;
+
+            Console.WriteLine($"Long Name: {contentZeroSMDH.LongTitle}");
+            Console.WriteLine($"Short Name: {contentZeroSMDH.ShortTitle}");
+            Console.WriteLine($"Publisher {contentZeroSMDH.Publisher}");
+            Console.WriteLine($"Product Code: {contentZeroNCCH.ProductCode.ProductCode}");
+            Console.WriteLine($"Title ID: {c.TMD.TitleId.Hex()}");
+            Console.WriteLine($"Region: {contentZeroNCCH.ProductCode.Region}");
+            Console.WriteLine($"CIA Type: {contentZeroNCCH.ProductCode.Console} | {contentZeroNCCH.ProductCode.ContentType}");
+            Console.WriteLine($"Title Version (Taken from TMD): {c.TMD.TitleVersion}");
+            Console.WriteLine($"Total Size: {c.CIAMeta.ContentInfo.Size} (0x{c.CIAMeta.ContentInfo.Size:X}) | {c.CIAMeta.ContentInfo.Size / 1024 / 128} blocks\n");
+
+            if (rename)
+            {
+                Console.WriteLine($"GodMode9 Naming Scheme: {c.GetGodMode9Name()}\n");
+                File.Move(c.Path, $"{new DirectoryInfo(c.Path).Parent}/{c.GetGodMode9Name()}");
+            }
+        }
+
+        public static void DisplayCIAVerbose(CIA c, bool rename)
+        {
+            Console.WriteLine(c.TMD);
+            Console.WriteLine(c.Ticket);
+
+            for (int i = 0; i < c.Contents.Count; i++)
+            {
+                Console.WriteLine($"Content {c.Contents[i].Item1}:\n\n");
+                Console.WriteLine(c.Contents[i].Item2);
+                Console.WriteLine(c.Icons[i]);
+            }
+
+            if (rename)
+            {
+                SMDHTitleNameStructure contentZeroSMDH = c.Icons[0].TitleNames[0];
+                NCCHInfo contentZeroNCCH = c.Contents[0].Item2;
+
+                Console.WriteLine($"GodMode9 Naming Scheme: {c.TMD.TitleId.Hex()} {Tools.CleanName(contentZeroSMDH.ShortTitle)} ({Tools.CleanName(contentZeroNCCH.ProductCode.ProductCode)}) {contentZeroNCCH.ProductCode.Region.Split(" ")[1]}.cia");
+                File.Move(c.Path, $"{new DirectoryInfo(c.Path).Name}/{c.TMD.TitleId.Hex()} {Tools.CleanName(contentZeroSMDH.ShortTitle)} ({Tools.CleanName(contentZeroNCCH.ProductCode.ProductCode)}) {contentZeroNCCH.ProductCode.Region.Split(" ")[1]}.cia");
+            }
         }
     }
 }
