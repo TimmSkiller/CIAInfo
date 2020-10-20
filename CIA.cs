@@ -56,7 +56,7 @@ namespace CTRInfo
                     }
 
                     p.StartInfo.FileName = "ninfs";
-                    p.StartInfo.Arguments = $"mount_cia \"{pathToCia}\" mount";
+                    p.StartInfo.Arguments = $"cia \"{pathToCia}\" mount";
                 }
 
                 p.StartInfo.CreateNoWindow = true;
