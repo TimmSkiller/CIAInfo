@@ -1156,6 +1156,6 @@ Is this title New Nintendo 3DS exclusive? no
 Will show the same output as verbose mode, but with the title names in all languages that apply, game ratings, and HOME Menu settings.
 </details>
 
-Credit goes to [https://github.com/ihaveamac](ihaveamac) for [https://github.com/ihaveamac/ninfs](ninfs).
+Credit goes to [ihaveamac](https://github.com/ihaveamac) for [ninfs](https://github.com/ihaveamac/ninfs).
 
-This Progam uses [https://github.com/TimmSkiller/CTR.NET](CTR.NET).
+This Progam uses [CTR.NET](https://github.com/TimmSkiller/CTR.NET).
