@@ -1157,5 +1157,5 @@ Will show the same output as verbose mode, but with the title names in all langu
 </details>
 
 Credit goes to [ihaveamac](https://github.com/ihaveamac) for [ninfs](https://github.com/ihaveamac/ninfs).
-
+Command Line Parsing is done using [CommandLine.Parser](https://github.com/commandlineparser/commandline).
 This Progam uses [CTR.NET](https://github.com/TimmSkiller/CTR.NET).
