@@ -11,12 +11,7 @@ namespace CTRInfo
         public static string[] RequiredFiles = { "boot9.bin", "seeddb.bin" };
 
         public static bool CanRunNinfs()
-        {
-            foreach (string file1 in RequiredFiles)
-            {
-                Console.WriteLine($"{ThreeDsFolder}{file1}");
-            }
-            
+        {   
             if (RequiredFiles.Any(file => !File.Exists($"{ThreeDsFolder}{file}")))
             {
                 return false;
