@@ -1,0 +1,3 @@
+[submodule "CTR.NET"]
+	path = CTR.NET
+	url = https://github.com/TimmSkiller/CTR.NET
